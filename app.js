@@ -13,7 +13,6 @@ var client = knox.createClient({
 	})
 	
 	
-
 function pushToS3(files, orig_res) {
 	var file_name = (new Date().valueOf() + files.upload.name)
 	client.putFile(files.upload.path, file_name, 
@@ -88,5 +87,13 @@ route.post('/upload', function(req, res) {
 
 })
 
+route.get('/list', function(req, res) {
+	client.list({ prefix: '' }, function(err, data){
+
+		res.writeHead(200, {'content-type': 'application/json'});
+		res.end(JSON.stringify(data.Contents));
+	});
+	
+})
 
 http.createServer(route).listen(3000);
