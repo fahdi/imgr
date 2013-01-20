@@ -3,6 +3,25 @@ var formidable = require('formidable'),
 	util = require('util'),
 	knox = require('knox');
 
+var client = knox.createClient({ 
+	key: '', 
+	secret: '', 
+	bucket: '' 
+	})
+	
+	
+
+function pushToS3(files) {
+	client.putFile(files.upload.path, (new Date().valueOf() + files.upload.name), 
+		{ 'Content-Length': files.upload.size
+  		, 'Content-Type': files.upload.type }, function(err, res){
+	  		
+	  if(err) console.log('Something bad happened putting file on S3')
+	  if(!err) console.log('File successfuly put file on S3')
+	});
+}
+
+
 http.createServer(function(req, res) {
   if (req.url == '/upload' && req.method.toLowerCase() == 'post') {
 	// parse a file upload
@@ -15,15 +34,14 @@ http.createServer(function(req, res) {
 	  res.writeHead(200, {'content-type': 'text/plain'});
 	  res.write('received upload:\n\n');
 	  res.end(util.inspect({fields: fields, files: files}));
+	  
+	  pushToS3(files)
+	  
 	});
 	
 	form.on('progress', function(bytesReceived, bytesExpected) {
 	  var percent = (bytesReceived/bytesExpected * 100).toString()
 	  console.log(percent.substr(0, percent.indexOf('.')) + '% of ' + bytesExpected)
-	});
-	
-	form.on('end', function() {
-	  console.log('upload is finished, now I should push it to S3')
 	});
 
 	return;
