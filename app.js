@@ -1,6 +1,7 @@
 var formidable = require('formidable'),
 	http = require('http'),
-	util = require('util');
+	util = require('util'),
+	knox = require('knox');
 
 http.createServer(function(req, res) {
   if (req.url == '/upload' && req.method.toLowerCase() == 'post') {
@@ -19,6 +20,10 @@ http.createServer(function(req, res) {
 	form.on('progress', function(bytesReceived, bytesExpected) {
 	  var percent = (bytesReceived/bytesExpected * 100).toString()
 	  console.log(percent.substr(0, percent.indexOf('.')) + '% of ' + bytesExpected)
+	});
+	
+	form.on('end', function() {
+	  console.log('upload is finished, now I should push it to S3')
 	});
 
 	return;
