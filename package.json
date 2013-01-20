@@ -1,0 +1,23 @@
+{
+  "name": "ATXnode",
+  "version": "0.0.1",
+  "description": "ERROR: No README.md file found!",
+  "main": "app.js",
+  "dependencies": {
+    "formidable": "~1.0.11",
+    "knox": "~0.4.6",
+    "router": "~0.6.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mcotton/imgr.git"
+  },
+  "author": "mcotton",
+  "license": "BSD",
+  "gitHead": "6a1d91ee6648b00de0c378418913fc6a3784b949",
+  "readmeFilename": "README.md"
+}
