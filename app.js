@@ -1,7 +1,10 @@
 var formidable = require('formidable'),
 	http = require('http'),
 	util = require('util'),
-	knox = require('knox');
+	knox = require('knox'),
+	router = require('router');
+
+var route = router();
 
 var client = knox.createClient({ 
 	key: '', 
@@ -29,11 +32,21 @@ function getFromS3(id) {
 }
 
 
-http.createServer(function(req, res) {
-  if (req.url == '/upload' && req.method.toLowerCase() == 'post') {
+route.get('/', function(req, res) {
+	// show a file upload form
+	res.writeHead(200, {'content-type': 'text/html'});
+	res.end(
+	  '<form action="/upload" enctype="multipart/form-data" method="post">'+
+	  '<input type="file" accept="image/*" capture="camera" name="upload"><br>' +
+	  '<input type="submit" value="Upload">'+
+	  '</form>'
+	);
+})
+
+route.post('/upload', function(req, res) {
 	// parse a file upload
 	var form = new formidable.IncomingForm();
-	
+
 	form.uploadDir = 'images'
 	form.maxFieldsSize = 5 * 1024 * 1024;
 
@@ -41,25 +54,17 @@ http.createServer(function(req, res) {
 	  res.writeHead(200, {'content-type': 'text/plain'});
 	  res.write('received upload:\n\n');
 	  res.end(util.inspect({fields: fields, files: files}));
-	  
+
 	  pushToS3(files)
-	  
+
 	});
-	
+
 	form.on('progress', function(bytesReceived, bytesExpected) {
 	  var percent = (bytesReceived/bytesExpected * 100).toString()
 	  console.log(Math.ceil(percent) + '% of ' + bytesExpected)
 	});
 
-	return;
-  }
+})
 
-  // show a file upload form
-  res.writeHead(200, {'content-type': 'text/html'});
-  res.end(
-	'<form action="/upload" enctype="multipart/form-data" method="post">'+
-    '<input type="file" accept="image/*" capture="camera" name="upload"><br>' +
-	'<input type="submit" value="Upload">'+
-	'</form>'
-  );
-}).listen(3000);
+
+http.createServer(route).listen(3000);
