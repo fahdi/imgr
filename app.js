@@ -21,6 +21,13 @@ function pushToS3(files) {
 	});
 }
 
+function getFromS3(id) {
+	client.getFile('/test/Readme.md', function(err, res){
+	  if(err) console.log('Something bad happened putting file on S3' + res)
+	  if(!err) console.log('File successfuly put file on S3 ' + res)
+	});
+}
+
 
 http.createServer(function(req, res) {
   if (req.url == '/upload' && req.method.toLowerCase() == 'post') {
@@ -41,7 +48,7 @@ http.createServer(function(req, res) {
 	
 	form.on('progress', function(bytesReceived, bytesExpected) {
 	  var percent = (bytesReceived/bytesExpected * 100).toString()
-	  console.log(percent.substr(0, percent.indexOf('.')) + '% of ' + bytesExpected)
+	  console.log(Math.ceil(percent) + '% of ' + bytesExpected)
 	});
 
 	return;
