@@ -32,9 +32,10 @@ function pushToS3(files, orig_res) {
 function getFromS3(id, orig_res) {
 	client.getFile(id, function(err, res){
 	  if(err) console.log('Something bad happened getting file from S3' + res);
-	  if(!err) console.log('File successfuly fetched from S3 ' + res.statusCode);
-	 	  
-	  orig_res.writeHead(res.statusCode, {'content-type': res.headers['content-type'] });
+	  if(!err) {
+        console.log('File successfuly fetched from S3 ' + res.statusCode);
+	 	orig_res.writeHead(res.statusCode, {'content-type': res.headers['content-type'] });
+      }
 	  
 	  res.on('data', function(chunk) {
 	    orig_res.write(chunk);
