@@ -11,9 +11,9 @@ var formidable = require('formidable'),
 var route = router();
 
 var client = knox.createClient({ 
-	key: '', 
-	secret: '',
-	bucket: ''
+    key: '', 
+    secret: '',
+    bucket: ''
 });
 	
 	
@@ -72,6 +72,7 @@ route.post('/upload', function(req, res) {
 	});
 
 	form.on('end', function() {
+        res.writeHead(302, {'Location': '/index.html'});
 		res.end();
 	});
 
