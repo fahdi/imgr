@@ -31,6 +31,7 @@ $(document).ready(function() {
         },
 
         render: function() {
+            pictureList.models.reverse();
             this.$el.html(this.template({ 'collection': pictureList }));
             return this;
         }
